@@ -29,6 +29,7 @@
         document.getElementById("enable").onclick = async () => {
 
             const permission = await Notification.requestPermission();
+            alert(Notification.permission);
 
             if (permission === "granted") {
 
