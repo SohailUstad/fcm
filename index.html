@@ -37,7 +37,8 @@
                 );
 
                 const token = await getToken(messaging, {
-                    vapidKey: "BG1xPJvrzT9l1ggdx9wfq2aUCfUwjruM-o2qT4YM19bZg45ncvpKEaBASz9uJ4muD8ImvRPQDGcg4JCtVrc_63U"
+                    vapidKey: "BG1xPJvrzT9l1ggdx9wfq2aUCfUwjruM-o2qT4YM19bZg45ncvpKEaBASz9uJ4muD8ImvRPQDGcg4JCtVrc_63U",
+                    serviceWorkerRegistration: registration
                 });
 
                 console.log("FCM TOKEN:", token);
