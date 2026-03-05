@@ -15,7 +15,31 @@ const messaging = firebase.messaging();
 messaging.onBackgroundMessage(function (payload) {
 
     self.registration.showNotification(payload.notification.title, {
-        body: payload.notification.body
+        body: payload.notification.body,
+        data: {
+            url: payload.data?.url
+        }
     });
+
+});
+
+self.addEventListener("notificationclick", function (event) {
+
+    event.notification.close();
+
+    const url = event.notification.data?.url || "/";
+
+    event.waitUntil(
+        clients.matchAll({ type: "window", includeUncontrolled: true }).then(function (clientList) {
+
+            for (const client of clientList) {
+                if (client.url === url && "focus" in client) {
+                    return client.focus();
+                }
+            }
+
+            return clients.openWindow(url);
+        })
+    );
 
 });
