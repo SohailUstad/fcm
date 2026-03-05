@@ -15,12 +15,17 @@ self.addEventListener("push", function (event) {
     const payload = event.data.json();
     const data = payload.data || {};
 
+    const options = {
+        body: data.body,
+        image: data.image,
+        icon: data.image,
+        data: {
+            url: data.url
+        }
+    };
+
     event.waitUntil(
-        self.registration.showNotification(data.title, {
-            body: data.body,
-            image: data.image,
-            data: { url: data.url }
-        })
+        self.registration.showNotification(data.title, options)
     );
 });
 
@@ -28,18 +33,9 @@ self.addEventListener("notificationclick", function (event) {
 
     event.notification.close();
 
-    const url = event.notification.data?.url || "/";
+    const url = event.notification.data.url;
 
     event.waitUntil(
-        clients.matchAll({ type: "window", includeUncontrolled: true }).then(function (clientList) {
-
-            for (const client of clientList) {
-                if (client.url === url && "focus" in client) {
-                    return client.focus();
-                }
-            }
-
-            return clients.openWindow(url);
-        })
+        clients.openWindow(url)
     );
 });
