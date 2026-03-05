@@ -10,26 +10,36 @@ firebase.initializeApp({
     appId: "1:684690322210:web:b3df589bfad23ba73eeb7b"
 });
 
-const messaging = firebase.messaging();
+self.addEventListener("push", function (event) {
 
-messaging.onBackgroundMessage(function (payload) {
+    const payload = event.data.json();
+    const data = payload.data || {};
 
-    self.registration.showNotification(payload.data.title, {
-        body: payload.data.body,
-        image: payload.data.image,
-        data: {
-            url: payload.data.url
-        }
-    });
-
+    event.waitUntil(
+        self.registration.showNotification(data.title, {
+            body: data.body,
+            image: data.image,
+            data: { url: data.url }
+        })
+    );
 });
 
 self.addEventListener("notificationclick", function (event) {
 
     event.notification.close();
 
-    const url = event.notification.data?.url;
+    const url = event.notification.data?.url || "/";
 
-    event.waitUntil(clients.openWindow(url));
+    event.waitUntil(
+        clients.matchAll({ type: "window", includeUncontrolled: true }).then(function (clientList) {
 
+            for (const client of clientList) {
+                if (client.url === url && "focus" in client) {
+                    return client.focus();
+                }
+            }
+
+            return clients.openWindow(url);
+        })
+    );
 });
