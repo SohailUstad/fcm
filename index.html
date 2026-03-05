@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Firebase Push</title>
+</head>
+
+<body>
+
+    <button id="enable">Enable Notifications</button>
+
+    <script type="module">
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+        import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-messaging.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCWtxW8Fu4A0cGRbY_EI7Y2wJSbyqQShXk",
+            authDomain: "test-c0d7c.firebaseapp.com",
+            projectId: "test-c0d7c",
+            storageBucket: "test-c0d7c.firebasestorage.app",
+            messagingSenderId: "684690322210",
+            appId: "1:684690322210:web:b3df589bfad23ba73eeb7b"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const messaging = getMessaging(app);
+
+        document.getElementById("enable").onclick = async () => {
+
+            const permission = await Notification.requestPermission();
+
+            if (permission === "granted") {
+
+                const token = await getToken(messaging, {
+                    vapidKey: "BG1xPJvrzT9l1ggdx9wfq2aUCfUwjruM-o2qT4YM19bZg45ncvpKEaBASz9uJ4muD8ImvRPQDGcg4JCtVrc_63U"
+                });
+
+                console.log("FCM TOKEN:", token);
+
+            }
+
+        };
+
+    </script>
+
+</body>
+
+</html>
