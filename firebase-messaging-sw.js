@@ -14,10 +14,11 @@ const messaging = firebase.messaging();
 
 messaging.onBackgroundMessage(function (payload) {
 
-    self.registration.showNotification(payload.notification.title, {
-        body: payload.notification.body,
+    self.registration.showNotification(payload.data.title, {
+        body: payload.data.body,
+        image: payload.data.image,
         data: {
-            url: payload.data?.url
+            url: payload.data.url
         }
     });
 
@@ -27,19 +28,8 @@ self.addEventListener("notificationclick", function (event) {
 
     event.notification.close();
 
-    const url = event.notification.data?.url || "/";
+    const url = event.notification.data?.url;
 
-    event.waitUntil(
-        clients.matchAll({ type: "window", includeUncontrolled: true }).then(function (clientList) {
-
-            for (const client of clientList) {
-                if (client.url === url && "focus" in client) {
-                    return client.focus();
-                }
-            }
-
-            return clients.openWindow(url);
-        })
-    );
+    event.waitUntil(clients.openWindow(url));
 
 });
